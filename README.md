@@ -1,100 +1,91 @@
 # 📚 AI Study Assistant
 
-A small FastAPI + Streamlit project that provides a subject-focused study assistant powered by configurable AI providers (OpenAI, Google Gemini, or Anthropic Claude).
-
-**Quick summary:**
-- Backend: `backend.py` (FastAPI) — exposes `/`, `/subjects`, `/ask`
-- Frontend: `app.py` (Streamlit) — simple UI for asking questions
-- AI providers supported: OpenAI, Gemini (Google), Anthropic
+**Project Title:** AI Study Assistant for University Students  
+**Objective:** Help students get instant, subject-specific answers to academic questions using AI.  
+**Tools:** Python, Streamlit, FastAPI, Anthropic Claude API  
+**AI Model:** Gemini 1.5 Flash (via Google Generative AI API)
 
 ---
 
-## ⚙️ Requirements
-- Python 3.10+ recommended
-- Virtual environment (optional but recommended)
+## 🗂️ Project Structure
 
-Install dependencies:
+```
+ai_study_assistant/
+├── app.py            # Streamlit frontend
+├── backend.py        # FastAPI backend
+├── requirements.txt  # Dependencies
+└── README.md
+```
 
+---
+
+## ⚙️ Setup & Running Instructions
+
+### 1. Clone the repository
 ```bash
-python -m venv .venv
-source .venv/bin/activate
+git clone https://github.com/YOUR_USERNAME/ai-study-assistant.git
+cd ai-study-assistant
+```
+
+### 2. Install dependencies
+```bash
 pip install -r requirements.txt
 ```
 
----
-
-## Environment / Configuration
-The app reads keys and settings from environment variables. You can place them in a `.env` file at the project root (the project loads it via `python-dotenv`).
-
-Required variables:
-
-- `AI_PROVIDER` — one of `openai`, `gemini`, or `anthropic` (controls which client `backend.py` uses)
-- `OPENAI_API_KEY` — if `AI_PROVIDER=openai`
-- `GEMINI_API_KEY` — if `AI_PROVIDER=gemini`
-- `ANTHROPIC_API_KEY` — if `AI_PROVIDER=anthropic`
-
-Example `.env` (do NOT commit your real keys):
-
-```
-AI_PROVIDER=openai
-OPENAI_API_KEY=sk-...
-GEMINI_API_KEY=...
-ANTHROPIC_API_KEY=...
-```
-
----
-
-## Run (local development)
-1. Activate your virtualenv (if used):
-
+### 3. Set your API key
 ```bash
-source .venv/bin/activate
+# macOS/Linux
+export GEMINI_API_KEY=your_key_here
+
+# Windows (Command Prompt)
+set GEMINI_API_KEY=your_key_here
 ```
+Get a free API key at: https://aistudio.google.com/apikey
 
-2. Start the backend (FastAPI):
-
+### 4. Start the FastAPI backend
 ```bash
-uvicorn backend:app --reload --port 8000
+uvicorn backend:app --reload
+# Runs at http://localhost:8000
+# API docs at http://localhost:8000/docs
 ```
 
-3. In a new terminal, start the Streamlit frontend:
-
+### 5. Start the Streamlit frontend (new terminal)
 ```bash
 streamlit run app.py
+# Opens at http://localhost:8501
 ```
 
-The frontend expects the backend at `http://localhost:8000` by default.
-
 ---
 
-## API
-- `GET /` — health check
-- `GET /subjects` — returns available subjects
-- `POST /ask` — ask a question (JSON body: `subject`, `question`, `level`)
+## 🔌 API Endpoints
 
-Example curl (non-streaming verification):
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/` | Health check |
+| GET | `/subjects` | List available subjects |
+| POST | `/ask` | Submit a question |
 
-```bash
-curl -X POST http://localhost:8000/ask \
-  -H "Content-Type: application/json" \
-  -d '{"subject":"Computer Science","question":"What is recursion?","level":"Undergraduate"}'
+**POST `/ask` body:**
+```json
+{
+  "subject": "Computer Science",
+  "question": "What is recursion?",
+  "level": "Undergraduate"
+}
 ```
 
-Notes: the backend streams responses from the provider; the frontend collects that stream and shows a composed answer.
+---
+
+## ✨ Features
+- Select subject + academic level
+- Ask any academic question
+- AI returns a structured, concise answer
+- Question history shown in session
+- Clean, minimal UI
 
 ---
 
-## Switching providers
-Change `AI_PROVIDER` in your environment or `.env` to switch between `openai`, `gemini`, and `anthropic`. `backend.py` contains the provider-specific client setup and streaming helpers.
-
----
-
-## Troubleshooting
-- If the frontend shows "Backend is not running", start the backend and ensure it's reachable at `http://localhost:8000`.
-- Verify your environment variable names and keys.
-- Check `requirements.txt` for compatible package versions if you encounter import errors.
-
----
-
-## License & Notes
-This project is an educational sample. Keep API keys secret and avoid committing them to version control.
+## 👥 Team Members
+- Member 1 — [Role]
+- Member 2 — [Role]
+- Member 3 — [Role]
