@@ -5,7 +5,6 @@ Tabs: Study (RAG chat + upload), Quiz (gamified), Dashboard (performance)
 
 import streamlit as st
 import requests
-import json
 from datetime import datetime
 
 API_URL = "http://localhost:8000"
@@ -15,10 +14,80 @@ st.set_page_config(page_title="AI Study Assistant", page_icon="📚", layout="wi
 # ── CSS ───────────────────────────────────────────────────────────────────────
 st.markdown("""
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap');
 
-html, body, [class*="css"] { font-family: 'Sora', sans-serif; }
+/* === Base === */
+html, body, [data-testid="stAppViewContainer"] {
+    font-family: 'DM Sans', system-ui, sans-serif !important;
+}
+[data-testid="block-container"] {
+    padding-top: 2rem;
+    padding-bottom: 3rem;
+}
 
+/* Bordered container cards */
+[data-testid="stVerticalBlock"] > div > [data-testid="stVerticalBlockBorderWrapper"] {
+    background: #161c2a;
+    border: 1px solid rgba(148,163,184,0.09);
+    border-radius: 10px;
+    padding: 14px 16px;
+}
+
+/* Buttons */
+.stButton > button {
+    border-radius: 6px !important;
+    font-weight: 600 !important;
+    font-family: 'DM Sans', sans-serif !important;
+    font-size: 13.5px !important;
+    border: none !important;
+    padding: 10px 16px !important;
+    background: #6366f1 !important;
+    color: white !important;
+    transition: background 0.15s, opacity 0.15s !important;
+}
+.stButton > button:hover { opacity: 0.88 !important; background: #4f46e5 !important; }
+
+/* Selectboxes */
+[data-baseweb="select"] > div {
+    border-radius: 6px !important;
+    background: #1d2436 !important;
+    border: 1px solid rgba(148,163,184,0.15) !important;
+}
+
+/* Text inputs and textareas */
+textarea, [data-baseweb="input"] input {
+    border-radius: 6px !important;
+    background: #1d2436 !important;
+    border: 1px solid rgba(148,163,184,0.15) !important;
+    font-family: 'DM Sans', sans-serif !important;
+}
+
+/* File uploader */
+[data-testid="stFileUploader"] {
+    background: #1d2436;
+    border-radius: 8px;
+    border: 1.5px dashed rgba(148,163,184,0.2);
+    padding: 8px;
+}
+
+/* Tabs */
+[data-baseweb="tab-list"] {
+    border-bottom: 1px solid rgba(148,163,184,0.09) !important;
+    gap: 0 !important;
+}
+[data-baseweb="tab"] {
+    font-weight: 500 !important;
+    font-size: 13.5px !important;
+    padding: 10px 20px !important;
+}
+
+/* Divider */
+hr { border-color: rgba(148,163,184,0.09) !important; }
+
+/* Alerts */
+[data-testid="stAlert"] { border-radius: 8px !important; }
+
+/* === Custom classes used by the app === */
 .answer-box {
     background: #0f172a;
     color: #e2e8f0;
@@ -38,7 +107,32 @@ html, body, [class*="css"] { font-family: 'Sora', sans-serif; }
     padding: 2px 12px;
     font-size: 0.75rem;
     margin-right: 6px;
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'DM Sans', sans-serif;
+}
+.rag-pill {
+    display: inline-block;
+    background: rgba(34,197,94,0.12);
+    color: #4ade80;
+    border: 1px solid rgba(34,197,94,0.3);
+    border-radius: 20px;
+    padding: 3px 12px;
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+.rag-session {
+    color: #4ade80;
+    font-size: 0.78rem;
+    font-weight: 500;
+}
+.rag-session::before {
+    content: "● ";
+    color: #4ade80;
+}
+.file-name {
+    color: #e2e8f0;
+    font-size: 0.85rem;
+    font-weight: 500;
+    margin-bottom: 4px;
 }
 .quiz-card {
     background: #0f172a;
@@ -51,7 +145,7 @@ html, body, [class*="css"] { font-family: 'Sora', sans-serif; }
     font-size: 3.5rem;
     font-weight: 700;
     color: #6366f1;
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'DM Sans', sans-serif;
 }
 .stat-card {
     background: #0f172a;
@@ -64,37 +158,19 @@ html, body, [class*="css"] { font-family: 'Sora', sans-serif; }
     font-size: 2rem;
     font-weight: 700;
     color: #6366f1;
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'DM Sans', sans-serif;
 }
 .badge {
     display: inline-block;
     font-size: 1.6rem;
     margin: 0.2rem;
 }
-.upload-info {
-    background: #0d1117;
-    border: 1px dashed #334155;
-    border-radius: 10px;
-    padding: 0.75rem 1rem;
-    font-size: 0.82rem;
-    color: #94a3b8;
-    font-family: 'JetBrains Mono', monospace;
-}
-.stButton > button {
-    background: #6366f1;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    font-family: 'Sora', sans-serif;
-    font-weight: 500;
-}
-.stButton > button:hover { background: #4f46e5; }
 </style>
 """, unsafe_allow_html=True)
 
 # ── Session state ─────────────────────────────────────────────────────────────
 for key, val in {
-    "history": [], "session_id": "", "filename": "",
+    "history": [], "session_id": "", "filename": "", "files": [],
     "quiz": [], "quiz_answers": {}, "quiz_submitted": False,
     "sessions": []  # list of {date, subject, score, total, xp}
 }.items():
@@ -159,55 +235,101 @@ with tab_study:
     col_left, col_right = st.columns([1, 2])
 
     with col_left:
-        st.markdown("#### ⚙️ Settings")
-        subject = st.selectbox("Subject", SUBJECTS)
-        level   = st.selectbox("Level", ["High School", "Undergraduate", "Graduate"])
+        with st.container(border=True):
+            st.markdown("##### ⚙️ Settings")
+            subject = st.selectbox("Subject", SUBJECTS)
+            level   = st.selectbox("Level", ["High School", "Undergraduate", "Graduate"])
 
-        st.markdown("#### 📄 Lecture Slides")
-        uploaded = st.file_uploader("Upload PDF or PPTX", type=["pdf", "pptx"], label_visibility="collapsed")
+        with st.container(border=True):
+            st.markdown("##### 📄 Lecture Slides")
+            uploaded = st.file_uploader(
+                "Upload PDF or PPTX",
+                type=["pdf", "pptx"],
+                accept_multiple_files=True,
+                label_visibility="collapsed",
+            )
 
-        if uploaded:
-            if st.button("📤 Process PDF", use_container_width=True):
-                with st.spinner("Reading slides..."):
-                    r = requests.post(f"{API_URL}/upload",
-                                      files={"file": (uploaded.name, uploaded.read(), "application/pdf")})
-                    if r.status_code == 200:
-                        d = r.json()
-                        st.session_state.session_id = d["session_id"]
-                        st.session_state.filename   = d["filename"]
-                        st.success(f"✅ Loaded: {d['filename']} ({d['chunks']} chunks)")
-                    else:
-                        st.error("Upload failed.")
+            if uploaded:
+                label = "📤 Process Files" if len(uploaded) > 1 else "📤 Process File"
+                if st.button(label, use_container_width=True):
+                    with st.spinner(f"Reading {len(uploaded)} file(s)..."):
+                        payload = [
+                            ("files", (f.name, f.read(), "application/octet-stream"))
+                            for f in uploaded
+                        ]
+                        r = requests.post(f"{API_URL}/api/upload", files=payload)
+                        if r.status_code == 200:
+                            d = r.json()
+                            st.session_state.session_id = d["session_id"]
+                            st.session_state.filename   = d["filename"]
+                            st.session_state.files      = d.get("files", [d["filename"]])
+                            st.success(f"✅ Loaded: {d['filename']} ({d['chunks']} chunks)")
+                        else:
+                            try:
+                                detail = r.json().get("detail", "Upload failed.")
+                            except Exception:
+                                detail = "Upload failed."
+                            st.error(detail)
 
-        if st.session_state.filename:
-            st.markdown(f'<div class="upload-info">📎 {st.session_state.filename}<br>🔑 RAG session active</div>',
-                        unsafe_allow_html=True)
-            if st.button("📝 Summarize Slides", use_container_width=True):
-                with st.spinner("Summarizing..."):
-                    r = requests.post(f"{API_URL}/summarize",
-                                      params={"session_id": st.session_state.session_id,
-                                              "subject": subject, "level": level})
-                    if r.status_code == 200:
-                        summary = r.json()["summary"]
-                        st.session_state.history.insert(0, {
-                            "subject": subject, "level": level,
-                            "question": f"📝 Summary of: {st.session_state.filename}",
-                            "answer": summary
-                        })
-                    else:
-                        st.error("Summarization failed.")
+            if st.session_state.filename:
+                files_list = st.session_state.get("files") or [st.session_state.filename]
+                files_html = "<br>".join(f'<div class="file-name">📄 {n}</div>' for n in files_list)
+                st.markdown(
+                    f'{files_html}<div class="rag-session">RAG session active</div>',
+                    unsafe_allow_html=True,
+                )
+                if st.button("📝 Summarize Slides", use_container_width=True):
+                    with st.spinner("Summarizing..."):
+                        r = requests.post(
+                            f"{API_URL}/api/summarize",
+                            params={
+                                "session_id": st.session_state.session_id,
+                                "subject": subject,
+                                "level": level,
+                            },
+                            timeout=60,
+                        )
+                        if r.status_code == 200:
+                            summary = r.json()["summary"]
+                            st.session_state.history.insert(0, {
+                                "subject": subject, "level": level,
+                                "question": f"📝 Summary of: {st.session_state.filename}",
+                                "answer": summary,
+                            })
+                        else:
+                            try:
+                                detail = r.json().get("detail", r.text)
+                            except Exception:
+                                detail = r.text or f"HTTP {r.status_code}"
+                            st.error(f"Summarization failed: {detail}")
 
     with col_right:
-        st.markdown("#### 💬 Ask a Question")
-        if st.session_state.filename:
-            st.info(f"🔍 RAG active — answers will reference **{st.session_state.filename}**")
+        with st.container(border=True):
+            h1, h2 = st.columns([3, 1])
+            with h1:
+                st.markdown("##### 💬 Ask a Question")
+            with h2:
+                if st.session_state.filename:
+                    st.markdown(
+                        '<div style="text-align:right;padding-top:6px">'
+                        '<span class="rag-pill">● RAG Active</span></div>',
+                        unsafe_allow_html=True,
+                    )
 
-        question = st.text_area("Your question", height=100,
-                                placeholder="e.g. What are the key concepts from today's lecture?")
+            st.markdown(
+                f'<span class="meta-tag">📘 {subject}</span>'
+                f'<span class="meta-tag">🎓 {level}</span>',
+                unsafe_allow_html=True,
+            )
 
-        c1, c2 = st.columns(2)
-        ask_btn   = c1.button("Ask AI ✨", use_container_width=True)
-        clear_btn = c2.button("🗑️ Clear Chat", use_container_width=True)
+            question = st.text_area(
+                "Your question", height=100, label_visibility="collapsed",
+                placeholder="e.g. What are the key concepts from today's lecture?",
+            )
+
+            c1, c2 = st.columns([4, 1])
+            ask_btn   = c1.button("Ask AI ✨", use_container_width=True)
+            clear_btn = c2.button("🗑️ Clear", use_container_width=True)
 
         if clear_btn:
             st.session_state.history = []
@@ -219,19 +341,17 @@ with tab_study:
             else:
                 with st.spinner("Thinking..."):
                     try:
-                        r = requests.post(f"{API_URL}/ask",
-                                          json={"subject": subject, "question": question,
-                                                "level": level,
-                                                "session_id": st.session_state.session_id},
-                                          stream=True, timeout=45)
+                        r = requests.post(
+                            f"{API_URL}/api/ask",
+                            json={"subject": subject, "question": question,
+                                  "level": level,
+                                  "session_id": st.session_state.session_id},
+                            timeout=60,
+                        )
                         if r.status_code == 200:
-                            answer = ""
-                            for chunk in r.iter_content(chunk_size=None, decode_unicode=True):
-                                if chunk:
-                                    answer += chunk
                             st.session_state.history.insert(0, {
                                 "subject": subject, "level": level,
-                                "question": question, "answer": answer
+                                "question": question, "answer": r.text,
                             })
                         else:
                             st.error(f"Error: {r.json().get('detail')}")
@@ -240,14 +360,13 @@ with tab_study:
 
         # Chat history
         for i, item in enumerate(st.session_state.history):
-            st.markdown(
-                f'<span class="meta-tag">{item["subject"]}</span>'
-                f'<span class="meta-tag">{item["level"]}</span>',
-                unsafe_allow_html=True)
-            st.markdown(f"**Q:** {item['question']}")
-            st.markdown(f'<div class="answer-box">{item["answer"]}</div>', unsafe_allow_html=True)
-            if i < len(st.session_state.history) - 1:
-                st.divider()
+            with st.container(border=True):
+                st.markdown(
+                    f'<span class="meta-tag">📘 {item["subject"]}</span>'
+                    f'<span class="meta-tag">🎓 {item["level"]}</span>',
+                    unsafe_allow_html=True)
+                st.markdown(f"**Q:** {item['question']}")
+                st.markdown(f'<div class="answer-box">{item["answer"]}</div>', unsafe_allow_html=True)
 
 # ════════════════════════════════════════════════════════════════════════════
 # TAB 2: QUIZ
@@ -259,12 +378,12 @@ with tab_quiz:
         st.markdown("#### 🎯 Quiz Settings")
         q_subject = st.selectbox("Subject ", SUBJECTS, key="q_sub")
         q_level   = st.selectbox("Level ", ["High School", "Undergraduate", "Graduate"], key="q_lvl")
-        q_count   = st.slider("Number of questions", 3, 10, 5)
+        q_count   = st.slider("Number of questions", 3, 30, 5)
         use_pdf   = st.checkbox("Use uploaded lecture slides", value=bool(st.session_state.filename))
 
         if st.button("🎲 Generate Quiz", use_container_width=True):
             with st.spinner("Generating quiz..."):
-                r = requests.post(f"{API_URL}/quiz", json={
+                r = requests.post(f"{API_URL}/api/quiz", json={
                     "session_id": st.session_state.session_id if use_pdf else "",
                     "subject": q_subject, "level": q_level, "num_questions": q_count
                 })
@@ -273,7 +392,11 @@ with tab_quiz:
                     st.session_state.quiz_answers  = {}
                     st.session_state.quiz_submitted = False
                 else:
-                    st.error("Quiz generation failed. Try again.")
+                    try:
+                        detail = r.json().get("detail", r.text)
+                    except Exception:
+                        detail = r.text or f"HTTP {r.status_code}"
+                    st.error(f"Quiz generation failed: {detail}")
 
     with q_col2:
         if not st.session_state.quiz:
