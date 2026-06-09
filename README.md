@@ -303,9 +303,9 @@ Switching providers requires **no code changes**.
 
 ## 👥 Team Members
 
-* Member 1
-* Member 2
-* Member 3
+* Aleksei Dudkin
+* Vadim Bushtruk
+* Zwe Pyi Phyo
 
 ---
 
