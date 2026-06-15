@@ -9,7 +9,7 @@ from datetime import datetime
 
 API_URL = "http://localhost:8000"
 
-st.set_page_config(page_title="AI Study Assistant", page_icon="📚", layout="wide")
+st.set_page_config(page_title="Stamford StudyAssist", page_icon="📚", layout="wide")
 
 # ── CSS ───────────────────────────────────────────────────────────────────────
 st.markdown("""
