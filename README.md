@@ -1,4 +1,4 @@
-# 📚 Stamford StudyAssist
+# Stamford StudyAssist
 
 > **AI-Powered Learning Assistant for Stamford International University Students**
 
@@ -6,38 +6,38 @@ Stamford StudyAssist is an intelligent learning platform that helps students stu
 
 ---
 
-## 🎯 Project Objective
+## Project Objective
 
 The goal of Stamford StudyAssist is to improve the learning experience by allowing students to:
 
-* Upload lecture slides and study materials
-* Ask AI questions about their courses
-* Generate quizzes from lecture content
-* Summarize lengthy lectures into concise notes
-* Track learning progress and performance
-* Receive context-aware answers grounded in their own materials
+- Upload lecture slides and study materials
+- Ask AI questions about their courses
+- Generate quizzes from lecture content
+- Summarize lengthy lectures into concise notes
+- Track learning progress and performance
+- Receive context-aware answers grounded in their own materials
 
 ---
 
-## ✨ Core Features
+## Core Features
 
-### 📄 Lecture Upload & Processing
+### Lecture Upload & Processing
 
 Upload study materials in:
 
-* PDF (`.pdf`)
-* PowerPoint (`.pptx`)
+- PDF (`.pdf`)
+- PowerPoint (`.pptx`)
 
 The system automatically:
 
-* Extracts text
-* Processes lecture content
-* Splits content into searchable chunks
-* Prepares data for RAG retrieval
+- Extracts text
+- Processes lecture content
+- Splits content into searchable chunks
+- Prepares data for RAG retrieval
 
 ---
 
-### 🤖 AI Study Assistant
+### AI Study Assistant
 
 Ask questions such as:
 
@@ -51,7 +51,7 @@ The AI retrieves relevant lecture content and generates contextual answers.
 
 ---
 
-### 🔍 Retrieval-Augmented Generation (RAG)
+### Retrieval-Augmented Generation (RAG)
 
 Instead of relying solely on the AI model's knowledge, the system:
 
@@ -63,46 +63,46 @@ This significantly reduces hallucinations and improves answer quality.
 
 ---
 
-### 📝 AI Quiz Generation
+### AI Quiz Generation
 
 Generate multiple-choice quizzes directly from:
 
-* Uploaded lecture slides
-* Course content
-* Selected subjects
+- Uploaded lecture slides
+- Course content
+- Selected subjects
 
 Perfect for:
 
-* Exam preparation
-* Self-assessment
-* Knowledge reinforcement
+- Exam preparation
+- Self-assessment
+- Knowledge reinforcement
 
 ---
 
-### 📚 Lecture Summarization
+### Lecture Summarization
 
 Convert lengthy lectures into concise study notes including:
 
-* Key concepts
-* Main topics
-* Important definitions
-* Exam-relevant takeaways
+- Key concepts
+- Main topics
+- Important definitions
+- Exam-relevant takeaways
 
 ---
 
-### 📊 Learning Analytics
+### Learning Analytics
 
 Track student performance through:
 
-* Quiz scores
-* Session history
-* Subject performance
-* Learning trends
-* Weak areas for improvement
+- Quiz scores
+- Session history
+- Subject performance
+- Learning trends
+- Weak areas for improvement
 
 ---
 
-## 🏗️ System Architecture
+## System Architecture
 
 ```text
 Frontend (Streamlit)
@@ -125,7 +125,7 @@ OpenAI / Gemini / Claude
 
 ---
 
-## 🛠️ Technology Stack
+## Technology Stack
 
 | Category            | Technology             |
 | ------------------- | ---------------------- |
@@ -140,7 +140,7 @@ OpenAI / Gemini / Claude
 
 ---
 
-## 📂 Project Structure
+## Project Structure
 
 ```text
 studyassist/
@@ -189,7 +189,7 @@ studyassist/
 
 ---
 
-## ⚙️ Environment Setup
+## Environment Setup
 
 Create a `.env` file in the project root:
 
@@ -213,7 +213,7 @@ DB_PATH=db/ruvector.db
 
 ---
 
-## 🚀 Installation
+## Installation
 
 Install all dependencies:
 
@@ -223,7 +223,7 @@ pip install -r requirements.txt
 
 ---
 
-## ▶️ Running the Backend
+## Running the Backend
 
 Start the FastAPI server:
 
@@ -245,7 +245,7 @@ http://localhost:8000/docs
 
 ---
 
-## ▶️ Running the Frontend
+## Running the Frontend
 
 Launch Streamlit:
 
@@ -261,7 +261,7 @@ http://localhost:8501
 
 ---
 
-## 🔌 Available API Endpoints
+## Available API Endpoints
 
 | Method | Endpoint         | Description                   |
 | ------ | ---------------- | ----------------------------- |
@@ -275,7 +275,7 @@ http://localhost:8501
 
 ---
 
-## 🧠 Supported AI Providers
+## Supported AI Providers
 
 The application supports multiple AI providers through environment configuration.
 
@@ -301,16 +301,12 @@ Switching providers requires **no code changes**.
 
 ---
 
-## 👥 Team Members
+## Team Members
 
-* Aleksei Dudkin
-* Vadim Bushtruk
-* Zwe Pyi Phyo
+- Aleksei Dudkin
+- Vadim Bushtruk
+- Zwe Pyi Phyo
 
 ---
-
-## 📌 Version
-
-**Version 2.0**
 
 Built for the **AI-Driven Web Application Final Project** at **Stamford International University**.
