@@ -6,7 +6,7 @@ from services.ai_service import call_ai_full, ai_error_to_http_exception
 from services.rag_service import retrieve_context
 
 router = APIRouter(
-    tags=["Document Upload"],
+    tags=["Question Route"],
 )
 
 @router.post("/ask")

@@ -9,13 +9,13 @@ from services.ai_service import call_ai_full, ai_error_to_http_exception
 
 
 router = APIRouter(
-    tags=["Document Upload"],
+    tags=["Summarize"],
 )
 
 
 
 
-
+@router.post("/summarize")
 def summarize(session_id: str, subject: str = "", level: str = "Undergraduate"):
     if session_id not in document_store:
         raise HTTPException(404, "Session not found. Please upload a PDF first.")
